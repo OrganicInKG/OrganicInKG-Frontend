@@ -1,0 +1,14 @@
+.addBtn{
+    background: #009B00;
+    border-radius: 9px;
+    color: #F2F2F2;
+    padding: 12px 40px;
+    font-size: 20px;
+    margin-left: 50px;
+}
+.addBtn:hover{
+    background: #007600;
+}
+.deleteBtn{
+    cursor: pointer;
+}
