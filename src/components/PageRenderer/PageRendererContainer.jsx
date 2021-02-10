@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import Header from "../Header/Header";
-import Sidebar from "../Sidebar/Sidebar";
+import SidebarList from "../Sidebar/SidebarList";
 import {Route, Switch, withRouter} from "react-router-dom";
 import SearchPanel from "../Search-panel/SearchPanel";
 import AddBtn from "../Btns/AddBtn";
@@ -30,7 +30,6 @@ const PageRenderer = ({
     optionsForSelectorData,
     creatorInitialFormValues,
     updaterInitialFormValues,
-    fileUploadKeys,
 
     getDataFunc,
     valueById,
@@ -39,85 +38,88 @@ const PageRenderer = ({
     updateFunc,
     clearFunc,
     deleteFunc,
-
-    isLoading
-
+    isLoading,
+    hasData,
+    clearTable,
+    recordViewValuesConfig,
+    clearSelectorData,
+    adding=true,
+    editing=true,
+    deleting=true,
                       })=>{
     const clickOnRecord=(id)=>history.push(`/${pageUrl}/view/${id}`)
     return(
         <>
-            <Header />
-            <div className="container">
-                <Sidebar />
-                <div className="page-content">
                     <Switch>
                         <Route exact path={`/${pageUrl}`}>
                             <h2 className='page-content__title'>{pageTitle}</h2>
-                            <div className='page-functional'>
-                                <SearchPanel />
-                                <AddBtn
-                                    urlToCreate={`/${pageUrl}/${pageUrl}-creator`}
-                                />
-                                <DeleteBtn
-                                    deleteFunc = {deleteFunc}
-                                /></div>
+
                             <Table
                                 isLoading={isLoading}
                                 getDataFunc={getDataFunc}
                                 data={tableData}
                                 columns={tableColumnsConfig}
-                                handlerClick={clickOnRecord} />
-                        </Route>
-                        <Route exact  path={`/${pageUrl}/${pageUrl}-creator`} >
-                            <FormContainer
-                                loadSelectorData={loadSelectorData}
-                                urlToTable={`/${pageUrl}`}
-                                createReq = {createFunc}
-                                formTitle = {creatorTitle}
-                                inputConfig ={formInputsConfig}
-                                optionsForSelector = {optionsForSelectorData}
-                                initialVals={creatorInitialFormValues}
-                                fileUploadKeys={fileUploadKeys}
-                                isLoading={isLoading}
+                                handlerClick={clickOnRecord}
+                                deleting={deleting}
+                                adding={adding}
+                                urlToCreate = {`/${pageUrl}/${pageUrl}-creator`}
+                                deleteFunc = {deleteFunc}
+                                hasData={hasData}
+                                clearTable={clearTable}
                             />
                         </Route>
-                        <Route exact  path={`/${pageUrl}/${pageUrl}-updater/:id`}>
+                        {adding &&
+                        <Route exact path={`/${pageUrl}/${pageUrl}-creator`}>
                             <FormContainer
                                 loadSelectorData={loadSelectorData}
+                                clearSelectorData={clearSelectorData}
+                                urlToTable={`/${pageUrl}`}
+                                createReq={createFunc}
+                                formTitle={creatorTitle}
+                                inputConfig={formInputsConfig}
+                                optionsForSelector={optionsForSelectorData}
+                                initialVals={creatorInitialFormValues}
+                                isLoading={isLoading}
+
+                            />
+                        </Route>
+                        }
+                        {editing &&
+                        <Route exact path={`/${pageUrl}/${pageUrl}-updater/:id`}>
+                            <FormContainer
+                                loadSelectorData={loadSelectorData}
+                                clearSelectorData={clearSelectorData}
                                 getByIdFunc={getByIdFunc}
                                 valueById={valueById}
                                 urlToTable={`/${pageUrl}`}
                                 initialVals={updaterInitialFormValues}
-                                updReq ={updateFunc}
-                                formTitle = {updaterTitle}
-                                inputConfig ={formInputsConfig}
-                                optionsForSelector = {optionsForSelectorData}
+                                updReq={updateFunc}
+                                formTitle={updaterTitle}
+                                inputConfig={formInputsConfig}
+                                optionsForSelector={optionsForSelectorData}
                                 isLoading={isLoading}
                             />
                         </Route>
-
-                        <Route  path={`/${pageUrl}/view/:id`}>
+                        }
+                        <Route path={`/${pageUrl}/view/:id`}>
                             <RecordViewerContainer
                                 titles={recordViewTitlesConfig}
                                 urlToUpd={`/${pageUrl}/${pageUrl}-updater`}
                                 urlToTable={`/${pageUrl}`}
 
+
+                                recordViewValuesConfig={recordViewValuesConfig}
                                 valueById={valueById}
                                 getByIdFunc={getByIdFunc}
-                                clearFunc = {clearFunc}
+                                clearFunc={clearFunc}
                                 isLoading={isLoading}
+
+                                editing={editing}
                             />
                         </Route>
                     </Switch>
-                </div>
-            </div>
         </>
     )
 }
 
-const mapStateToProps = state=>{
-    return{
-        isLoading : state.main.isFetchLoader
-    }
-}
-export default connect(mapStateToProps)(withRouter(PageRenderer))
+export default withRouter(PageRenderer)

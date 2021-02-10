@@ -3,6 +3,10 @@ import {Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import PasswordInput from "../Inputs/PasswordInput/PasswordInput";
 import PhoneInput from "../Inputs/PhoneInput/PhoneInput";
+import {connect} from "react-redux";
+import ErrorMsg from "../Modals/ErrorMessage";
+import {writeAuthMessage} from "../../redux/reducers/mainReducer";
+import Preloader from "../Preloader/Preloader";
 
 
 
@@ -10,29 +14,37 @@ const AuthForm = (props)=>{
     return(
         <Formik
             initialValues={{
-                login:'',
+                username:'',
                 password: ''
             }}
             validationSchema={Yup.object({
-                login: Yup.string().required(),
+                username: Yup.string().required(),
                 password: Yup.string().required(),
             })}
-            onSubmit={(values)=>{
-                console.log(values)
-                props.submitHandler(values)
-            }}
+            onSubmit={(values)=>props.submitHandler(values)}
         >
-            <Form>
-                <Field name="login" placeholder="Логин">
+            <Form
+                onClick={()=>props.writeAuthMessage('')}
+            >
+                <Field name="username" placeholder="Логин">
                     {({field:{name},form: { setFieldValue}})=>  <PhoneInput setFieldValue={setFieldValue} name={name} />}
                 </Field>
                 <Field name="password" >
                     {({field:{name},form: { setFieldValue}})=> <PasswordInput setFieldValue={setFieldValue} name={name} placeholder="Пароль"/>}
                 </Field>
+                {props.authFetchLoader || props.userFetchLoader ? <Preloader /> :
                 <button className={"auth__btn"} type={'submit'}>Войти</button>
+                }
+                {props.authErrorMessage && <ErrorMsg text={props.authErrorMessage}/>}
             </Form>
         </Formik>
     )
 }
-
-export default AuthForm
+const mapStateToProps = state=>{
+    return{
+        authErrorMessage: state.main.authErrorMessage,
+        authFetchLoader: state.main.authFetchLoader,
+        userFetchLoader: state.user.userFetchLoader,
+    }
+}
+export default connect(mapStateToProps,{writeAuthMessage})(AuthForm)

@@ -7,19 +7,22 @@ import {ProductColumns} from "../../configs/Products/tableColumnsConfig";
 import {recordViewProductConfig} from "../../configs/Products/recordViewConfig";
 import {productInputConfig} from "../../configs/Products/inputFormConfig";
 import {
-    clearProduct,
+    clearProduct, clearProducts,
     createProduct,
-    deleteProduct,
+    deleteProduct, getMeasureUnits,
     getProductById,
     getProducts,
     updateProduct
 } from "../../redux/reducers/productReducer";
+import {clearActiveProviders, getActiveProviders} from "../../redux/reducers/providerReducer";
+import {clearCategories, getCategory} from "../../redux/reducers/categoryReducer";
 
 
 
 
 const ProductsPage = ({   products,
                           productById,
+                          ratingById,
                           getProducts,
                           getProductById,
                           createProduct,
@@ -27,7 +30,13 @@ const ProductsPage = ({   products,
                           deleteProduct,
                           clearProduct,
                           categories,
-                          providers
+                          activeProviders,
+                          getCategory,
+                          getActiveProviders,
+                          hasProducts,
+                          measureUnits,
+                          getMeasureUnits,
+    ...props
                       })=>{
     return(
         <PageRenderer
@@ -42,18 +51,52 @@ const ProductsPage = ({   products,
             creatorTitle={'Создание товара'}
             updaterTitle={'Редактирование товара'}
             formInputsConfig={productInputConfig}
-            optionsForSelectorData={[categories,providers]}
-            // loadSelectorData={}
+            optionsForSelectorData={{
+                category: categories ? [...categories] : [],
+                provider: activeProviders  ? [...activeProviders] : [],
+                currency: ['SOM','USD'],
+                units: measureUnits  ?  [...measureUnits] : []
+            }}
+            recordViewValuesConfig={{
+                name: productById?.name,
+                category: productById?.category?.name,
+                supplier: productById?.supplier?.fullName,
+                description: productById?.description,
+                price: `${productById?.price} ${productById?.currency}`,
+                measure: `${productById?.measure} ${productById?.measureUnitResponse?.name}`,
+                images: productById?.productImages?.map(item=>item.imageUrl),
+                boughtCount: productById?.boughtCount,
+                raiting: productById?.raiting,
+                comments: productById?.comment?.map(item=>{
+                    return <div><span>{`${item.client?.lastName} ${item.client?.firstName} ${item.client?.middleName}`}</span>
+                        <span>{item.client?.email}</span>  <span> {item.comment} </span></div>
+                })
+
+            }}
+            loadSelectorData={[getCategory,getActiveProviders,getMeasureUnits]}
+            clearSelectorData = {[props.clearCategories,props.clearActiveProviders]}
             creatorInitialFormValues={{
                 name: '',
                 categoryId: null,
                 supplierId: null,
                 description: '',
                 price: 0,
-               measure: 0,
-
+                currency: '',
+                measure: 0,
+                measureUnitId: 0,
+                images: []
             }}
-            updaterInitialFormValues={{}}
+            updaterInitialFormValues={{
+                name: productById?.name,
+                categoryId: productById?.category?.id,
+                supplierId: productById?.supplier?.id,
+                description: productById?.description,
+                price: productById?.price,
+                currency: productById?.currency,
+                measure: productById?.measure,
+                measureUnitId: productById?.measureUnitResponse?.id,
+                images: productById?.productImages?.map(item=>item.imageUrl)
+            }}
             getDataFunc={getProducts}
             valueById={productById}
             getByIdFunc={getProductById}
@@ -61,6 +104,9 @@ const ProductsPage = ({   products,
             updateFunc={updateProduct}
             clearFunc={clearProduct}
             deleteFunc={deleteProduct}
+            hasData={hasProducts}
+            isLoading={props.productFetchLoader}
+            clearTable = {props.clearProducts}
 
         />
     )
@@ -68,19 +114,30 @@ const ProductsPage = ({   products,
 const mapStateToProps = state=>{
     return{
         products: state.product.products,
+        hasProducts: state.product.hasProducts,
         productById: state.product.productById,
+        ratingById: state.product.ratingById,
         categories: state.category.categories,
-        providers: state.provider.providers
+        activeProviders: state.provider.activeProviders,
+        measureUnits : state.product.measureUnits,
+        productFetchLoader: state.product.productFetchLoader,
+
     }
 }
 
 export  default  connect(mapStateToProps,
     {
+        getCategory,
+        getActiveProviders,
         getProducts,
         getProductById,
         createProduct,
         updateProduct,
         deleteProduct,
-        clearProduct
+        clearProduct,
+        getMeasureUnits,
+        clearProducts,
+        clearCategories,
+        clearActiveProviders
     }
 )(ProductsPage)

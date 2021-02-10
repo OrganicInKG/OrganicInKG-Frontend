@@ -19,20 +19,23 @@ export const recordViewProviderConfig  =[
         title: "Адрес",
         dataIndex: 'placeOfProduction',
     },
-    // {
-    //     title: "Фото пасспорта",
-    //     dataIndex: 'passport',
-    // },
-    // {
-    //     title: "Фото сертификата",
-    //     dataIndex: 'sertificate',
-    // },
+    {
+        title: "Фото паспорта",
+        dataIndex: 'PASSPORT',
+        type: 'image'
+    },
+    {
+        title: "Фото сертификата",
+        dataIndex: 'SERTIFICATE',
+        type: 'image'
+    },
+    {
+        title: "Фото контракта",
+        dataIndex: 'CONTRACT',
+        type: 'image'
+    },
     {
         title: "Банковский счет",
         dataIndex: 'ewalletNumber',
-    },
-    {
-        title: "Статус",
-        dataIndex: 'status',
     },
 ]

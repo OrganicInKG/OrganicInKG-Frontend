@@ -2,7 +2,7 @@ import React, {useEffect} from 'react'
 import {connect} from "react-redux";
 import PageRenderer from "../../components/PageRenderer/PageRendererContainer";
 import {
-    clearProvider,
+    clearProvider, clearProviders,
     createProvider,
     deleteProvider, getProviderById,
     getProviders,
@@ -15,7 +15,8 @@ import {recordViewProviderConfig} from "../../configs/Providers/recordViewConfig
 
 
 
-const ProvidersPage = ({providers,providerById,getProviders,getProviderById,createProvider,updateProvider,deleteProvider,clearProvider})=>{
+const ProvidersPage = ({providers,providerById,getProviders,getProviderById,createProvider,updateProvider,deleteProvider,clearProvider,...props})=>{
+    console.log(providerById)
     return(
         <PageRenderer
             pageUrl ={'providers'}
@@ -25,26 +26,58 @@ const ProvidersPage = ({providers,providerById,getProviders,getProviderById,crea
             tableColumnsConfig={ProviderColumns}
 
             recordViewTitlesConfig={recordViewProviderConfig}
-
+            recordViewValuesConfig={{
+                fullName: providerById?.fullName,
+                phone: providerById?.phone,
+                email:  providerById?.email,
+                placeOfProduction:  <span>
+                    {providerById?.placeOfProduction?.country}
+                    <br/>
+                        {providerById?.placeOfProduction?.region}
+                        <br/>{providerById?.placeOfProduction?.city}<br/>
+                            {providerById?.placeOfProduction?.street}
+                        </span>,
+                produces:  providerById?.produces,
+                walletNumber:  providerById?.ewalletNumber,
+                PASSPORT: providerById?.supplierFile?.filter(item=>item.supplierFileType==='PASSPORT' ? item.imgUrl : 'Нет фото/документа'),
+                SERTIFICATE: providerById?.supplierFile?.filter(item=>item.supplierFileType==='SERTIFICATE' ? item.imgUrl : 'Нет фото/документа'),
+                CONTRACT: providerById?.supplierFile?.filter(item=>item.supplierFileType==='CONTRACT' ? item.imgUrl : 'Нет фото/документа'),
+                isActive:  providerById?.isActive
+            }}
             creatorTitle={'Создание поставщика'}
             updaterTitle={'Редактирование поставщика'}
             formInputsConfig={providerInputConfig}
-            //optionsForSelectorData={providers}
-           // loadSelectorData={}
             creatorInitialFormValues={{
                 fullName: '',
                 phone: '',
-                produces: '',
-                placeOfProduction: '',
                 email: '',
+                placeOfProduction: {},
+                produces: '',
                 walletNumber: '',
-               // file_passport: [],
-               // file_sertificate: [],
-                status: ''
+                PASSPORT: [],
+                SERTIFICATE: [],
+                CONTRACT: [],
+                isActive: false
 
             }}
-           // fileUploadKeys = {['PASSPORT,SERTIFICATE']}
-            updaterInitialFormValues={{}}
+            updaterInitialFormValues={{
+                fullName: providerById?.fullName,
+                phone: providerById?.phone,
+                email:  providerById?.email,
+                placeOfProduction: {
+                    id: providerById?.placeOfProduction?.id,
+                    country: providerById?.placeOfProduction?.country,
+                    city: providerById?.placeOfProduction?.city,
+                    region: providerById?.placeOfProduction?.region,
+                    street: providerById?.placeOfProduction?.street
+                },
+                produces:  providerById?.produces,
+                walletNumber:  providerById?.ewalletNumber,
+                PASSPORT: providerById?.supplierFile?.filter(item=>item.supplierFileType==='PASSPORT'),
+                SERTIFICATE: providerById?.supplierFile?.filter(item=>item.supplierFileType==='SERTIFICATE'),
+                CONTRACT: providerById?.supplierFile?.filter(item=>item.supplierFileType==='CONTRACT'),
+                isActive:  providerById?.isActive
+            }}
             getDataFunc={getProviders}
             valueById={providerById}
             getByIdFunc={getProviderById}
@@ -52,6 +85,9 @@ const ProvidersPage = ({providers,providerById,getProviders,getProviderById,crea
             updateFunc={updateProvider}
             clearFunc={clearProvider}
             deleteFunc={deleteProvider}
+            isLoading={props.providerFetchLoader}
+            hasData={props.hasProvider}
+            clearTable = {props.clearProviders}
 
         />
     )
@@ -59,7 +95,10 @@ const ProvidersPage = ({providers,providerById,getProviders,getProviderById,crea
 const mapStateToProps = state=>{
     return{
         providers: state.provider.providers,
-        providerById: state.provider.providerById
+        providerById: state.provider.providerById,
+        providerFetchLoader: state.provider.providerFetchLoader,
+        hasProvider: state.provider.hasProvider
+
     }
 }
 
@@ -70,6 +109,6 @@ export  default  connect(mapStateToProps,
         createProvider,
         updateProvider,
         deleteProvider,
-        clearProvider
+        clearProvider,clearProviders
     }
 )(ProvidersPage)

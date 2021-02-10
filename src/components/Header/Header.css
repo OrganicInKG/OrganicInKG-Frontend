@@ -16,12 +16,38 @@
 .header__container h3{
     color: #F2F2F2;
 }
+.header-profile{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header-profile .preloader{
+    margin-top: -20px;
+}
 .header-profile__name{
     font-weight: bold;
     color: #F2F2F2!important;
-    margin-right: 25px!important;
+}
+.header-profile__password{
+    margin-right: 5px;
+    margin-left: 25px;
 }
 .header-profile span{
-    margin: 0 5px;
     color: #F2F2F2;
+}
+.header-profile__exit{
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+@media only screen and (max-width: 784px) {
+    .header__container{
+        margin: 0 25px;
+    }
+    .header-profile{
+        flex-direction: column;
+    }
+    .header-profile__divider{
+        display: none;
+    }
 }

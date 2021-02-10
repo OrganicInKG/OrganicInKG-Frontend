@@ -1,29 +1,32 @@
 import React, {useEffect, useRef, useState} from 'react'
 import TableItemColumn from "./TableItemColumn";
 import {connect} from "react-redux";
-import {writeElementsToDelete} from "../../redux/reducers/tableReducer";
+import {writeElementsToDelete, writeTableMessage} from "../../redux/reducers/tableReducer";
+import {toBeautifyFieldsValue} from "../../utils/toBeatifyFiledsValue";
 
 
 
 
-const TableItem= ({columns,data,handlerClick,elementsToDelete,writeElementsToDelete})=>{
+const TableItem= ({columns,data,handlerClick,elementsToDelete,writeElementsToDelete,deleting,writeTableMessage})=>{
     const [check,setCheck] = useState(false);
 
     useEffect(()=>{
-    let buff= [...elementsToDelete]
+        if(deleting) {
+            let buff = [...elementsToDelete]
 
-            if(check){
+            if (check) {
                 buff.push(data.id)
                 writeElementsToDelete(buff)
-            }else {
+            } else {
                 const index = buff.indexOf(data.id)
                 if (index > -1) {
                     buff.splice(index, 1);
                     writeElementsToDelete(buff)
                 }
             }
-        return ()=>{
-            writeElementsToDelete([])
+            return () => {
+                writeElementsToDelete([])
+            }
         }
     },[check])
     const tableItemColumn = ()=> {
@@ -34,16 +37,14 @@ const TableItem= ({columns,data,handlerClick,elementsToDelete,writeElementsToDel
         for (let i = 0; i < columns.length; i++) {
             for (let j = 0; j < valsKey.length; j++) {
                 if (valsKey[j] === columns[i].dataIndex) {
-                    const value = () => {
-                        if (valuesToArray[j] !== null && typeof valuesToArray[j] === 'object') {
-                            return valuesToArray[j]?.name
+                    const value = ()=> {
+                        if(columns[i]?.object){
+                            return valuesToArray[j]?.[`${columns[i].object}`]
                         }
                         return valuesToArray[j]
                     }
                     result.push((
-                        <div key={"table-item-" + data.id + "-" + i}>
-                            <TableItemColumn column={columns[i]} item={{title: columns[i].title, value: value()}}/>
-                        </div>
+                            <TableItemColumn key={`${i}-${data.id}`} column={columns[i]} item={{title: columns[i].title, value: toBeautifyFieldsValue(value())}}/>
                     ))
                     break;
                 }
@@ -63,10 +64,15 @@ const TableItem= ({columns,data,handlerClick,elementsToDelete,writeElementsToDel
     return(
         <div className={'tableItem-container'}
         >
+            {deleting &&
             <label className="tableItem-checkbox-label">
-                <input className="tableItem-checkbox__default" type="checkbox" onClick={()=>setCheck(!check)} />
-                    <span className="tableItem-checkbox__new"></span>
+                <input className="tableItem-checkbox__default" type="checkbox" onClick={() => {
+                    writeTableMessage('')
+                    setCheck(!check)
+                }}/>
+                <span className="tableItem-checkbox__new"></span>
             </label>
+            }
         <div  className='tableItem' style={style}  onClick={()=>handlerClick(data.id)}>
 
            {tableItemColumn()}
@@ -80,4 +86,4 @@ const mapStateToProps = state=>{
         elementsToDelete : state.table.elementsToDelete
     }
 }
-export default connect(mapStateToProps,{writeElementsToDelete})(TableItem)
+export default connect(mapStateToProps,{writeElementsToDelete,writeTableMessage})(TableItem)

@@ -1,13 +1,16 @@
 import React from 'react'
 import AuthForm from "./AuthForm";
+import {connect} from "react-redux";
+import {authSignIn, togglePageLoader} from "../../redux/reducers/mainReducer";
 
 
 
-const AuthContainer = ()=>{
-    const submitHandler = (values)=>console.log(values)
+const AuthContainer = ({authSignIn})=>{
+
+    const submitHandler = (values)=>authSignIn(values)
     return(
         <AuthForm submitHandler={submitHandler}/>
     )
 }
 
-export default AuthContainer
+export default connect(null,{authSignIn})(AuthContainer)

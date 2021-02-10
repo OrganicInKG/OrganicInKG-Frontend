@@ -8,14 +8,11 @@ export const ProductColumns  =[
     {
         title: "Категория",
         dataIndex: 'category',
+        object: 'name'
     },
     {
-        title: "Потсавщик",
+        title: "Поставщик",
         dataIndex: 'supplier',
-    },
-    {
-        title: "Цена",
-        dataIndex: 'price',
-
+        object: 'fullName'
     },
 ]

@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
 import {connect} from "react-redux";
 import {
+    clearCategories,
     clearCategory,
     createCategory,
     deleteCategory,
@@ -15,7 +16,7 @@ import {categoryInputConfig} from "../../configs/Categories/inputFormConfig";
 
 
 
-const CategoriesPage = ({categories,categoryById,getCategory,getCategoryById,createCategory,updateCategory,deleteCategory,clearCategory})=>{
+const CategoriesPage = ({categories,hasCategories,categoryById,getSearchedCategory,getCategory,getCategoryById,createCategory,updateCategory,deleteCategory,clearCategory,...props})=>{
     return(
         <PageRenderer
             pageUrl ={'categories'}
@@ -29,15 +30,21 @@ const CategoriesPage = ({categories,categoryById,getCategory,getCategoryById,cre
             creatorTitle={'Создание категории'}
             updaterTitle={'Редактирование категории'}
             formInputsConfig={categoryInputConfig}
-            optionsForSelectorData={categories}
+            loadSelectorData={[getCategory]}
+            clearSelectorData = {[props.clearCategories]}
+            optionsForSelectorData={{
+                category: categories ? [...categories] : []
+            }}
             creatorInitialFormValues={{
                 name: '',
                 description: '',
-                parentCategoryId: null}}
+                parentCategoryId: null,
+                image: ''}}
             updaterInitialFormValues={{
                 name: categoryById?.name,
                 description: categoryById?.description,
-                parentCategoryId: categoryById?.parentCategory?.id,
+                parentCategoryId: categoryById?.parentCategory?.id ? categoryById.parentCategory.id :  null,
+                image:  categoryById?.imagePath
             }}
             getDataFunc={getCategory}
             valueById={categoryById}
@@ -46,14 +53,18 @@ const CategoriesPage = ({categories,categoryById,getCategory,getCategoryById,cre
             updateFunc={updateCategory}
             clearFunc={clearCategory}
             deleteFunc={deleteCategory}
-
+            hasData={hasCategories}
+            isLoading={props.categoryFetchLoader}
+            clearTable = {props.clearCategories}
         />
     )
 }
 const mapStateToProps = state=>{
     return{
         categories: state.category.categories,
-        categoryById: state.category.categoryById
+        categoryById: state.category.categoryById,
+        hasCategories: state.category.hasCategories,
+        categoryFetchLoader: state.category.categoryFetchLoader
     }
 }
 
@@ -64,6 +75,7 @@ export  default  connect(mapStateToProps,
         createCategory,
         updateCategory,
         deleteCategory,
-        clearCategory
+        clearCategory,
+        clearCategories
     }
     )(CategoriesPage)
