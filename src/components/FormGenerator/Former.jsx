@@ -20,7 +20,12 @@ const Former = (props)=>{
                 placeholder={props.inputConfig[index]?.placeholder}
                 label={props.inputConfig[index]?.label}
                 type={props.inputConfig[index]?.type}
+                selectInputData={props.inputConfig[index]?.selectInputData}
                 options={props.optionsForSelector}
+                selectorProperty={props.inputConfig[index]?.selectorProperty}
+                fileTypes={props.inputConfig[index]?.fileTypes}
+                imageCount={props.inputConfig[index]?.imageCount}
+                readOnly={props.inputConfig[index]?.readonly}
             />
         )
     })
@@ -28,35 +33,33 @@ const Former = (props)=>{
     const schema = validationGenerator(array,props.inputConfig)
     return(
         <div className='createOrEditContainer'>
+            {props.formTitle &&
             <div className={'createOrEditContainer__title'}>
                 <Link to={props.urlToTable}><img src={backSVG} alt=""/></Link>
                 <h2>{props.formTitle}</h2>
             </div>
+            }
             <Formik
                 initialValues={props.initialVals}
                 validationSchema={Yup.object(schema)}
-                onSubmit={(values,e)=>{
-                    console.log(values)
-                    props.handleSubmit(values)
+                onSubmit={ async (values)=>{
+                  await props.handleSubmit(values)
                 }}
             >
                 {({handleSubmit,errors,values}) =>{
-            //console.log(values)
 
-                    const submitFunc = ()=> {
-                       // if(!errors) {
-                           return  handleSubmit()
-                       // }
-                    }
                     return (
                     <Form>
                         {inputs}
                         <div className={"createOrEditContainer__btns"}>
-                        <EditBtn
-                            urlToTable={props.urlToTable}
-                            confirmFunc = {submitFunc}
-                        />
-                        <CancelBtn />
+                            <EditBtn
+
+                                    urlToTable={props.urlToTable}
+                                    confirmFunc={handleSubmit}
+                                    disabled={Object.keys(errors).length !== 0 && true}
+                                />
+
+                        <CancelBtn urlToTable={props.urlToTable}/>
                         </div>
                     </Form>
                 )}}

@@ -7,13 +7,10 @@ export const recordViewProductConfig  =[{
         dataIndex: 'category',
 },
     {
-        title: "Поставщика товара",
+        title: "Поставщик товара",
         dataIndex: 'supplier',
     },
-// {
-//     title: "Изображения товара",
-//         dataIndex: 'productImages',
-// },
+
 {
     title: "Описание",
         dataIndex: 'description',
@@ -26,4 +23,23 @@ export const recordViewProductConfig  =[{
     title: "Количество товара",
         dataIndex: 'measure',
 },
+    {
+        title: "Фото товара",
+        dataIndex: 'images',
+        type: 'image'
+    },
+    {
+        title: 'Рейтинг товара',
+        dataIndex: 'raiting',
+
+    },
+    {
+        title: 'Количество покупок',
+        dataIndex: 'boughtCount'
+    },
+    {
+        title: 'Комментарии',
+        dataIndex: 'comments'
+    }
+
     ]

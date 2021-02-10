@@ -5,7 +5,6 @@ import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import EditBtn from "../Btns/EditBtn";
 import CancelBtn from "../Btns/CancelBtn";
-import PasswordInput from "../Inputs/PasswordInput/PasswordInput";
 
 
 
@@ -17,53 +16,61 @@ const ProfileForm = (props)=>{
 
             <Formik
                 initialValues={{
-                    name: '',
-                    password: '',
-                    new_password: ''
+                    firstName: props.profile?.firstName,
+                    lastName: props.profile?.lastName,
+                    middleName: props.profile?.middleName,
+                    email: props.profile?.email
                 }}
                 validationSchema={Yup.object({
-                    name: Yup.string(),
-
-
-                    password: Yup.string(),
-
-                    new_password: Yup.string(),
-
-
-
+                    firstName: Yup.string().nullable(),
+                    lastName: Yup.string().nullable(),
+                    middleName: Yup.string().nullable(),
+                    email: Yup.string().nullable()
                 })}
-                onSubmit={(values)=>{
-                }}
+                onSubmit={(values)=>props.handleSubmit(values)}
             >
-                <Form>
-                    <div className="createOrEditField">
+                {({handleSubmit,errors,values}) => {
 
-                        <Field name="name" placeholder="Имя"/>
-                        <span  className='authError'><ErrorMessage name="name"/></span>
-                    </div>
-                    <div className="createOrEditField">
+                    return (
+                        <Form>
+                            <div className="createOrEditField">
+                                <label htmlFor={'firstName'}>Имя
+                                <Field name="firstName" placeholder="Виктория"/>
+                                <span className='authError'><ErrorMessage name="firstName"/></span>
+                                </label>
+                            </div>
+                            <div className="createOrEditField">
+                                <label htmlFor={'lastName'}>Фамилия
+                                <Field name="lastName" placeholder="Ансимова"/>
+                                <span className='authError'><ErrorMessage name="lastName"/></span>
+                                </label>
+                            </div>
+                            <div className="createOrEditField">
+                                <label htmlFor={'middleName'}>Отчество
+                                <Field name="middleName" placeholder="Викторовна"/>
+                                <span className='authError'><ErrorMessage name="middleName"/></span>
+                                </label>
+                            </div>
+                            <div className="createOrEditField">
+                                <label htmlFor={'email'}>E-mail
+                                    <Field name="email" placeholder="example.com"/>
+                                    <span className='authError'><ErrorMessage name="email"/></span>
+                                </label>
+                            </div>
 
-                        <Field name="password" >
-                            {({field:{name},form: { setFieldValue}})=> <PasswordInput setFieldValue={setFieldValue} name={name} placeholder={"Старый пароль"}/>}
-
-                        </Field>
-                        <span  className='authError'><ErrorMessage name="password"/></span>
-                    </div>
-                    <div className="createOrEditField">
-
-                        <Field name="new_password" >
-                            {({field:{name},form: { setFieldValue}})=> <PasswordInput setFieldValue={setFieldValue} name={name} placeholder={"Новый пароль"}/>}
-
-                        </Field>
-                        <span  className='authError'><ErrorMessage name="new_password"/></span>
-                    </div>
-
-
-
-
-                    <EditBtn />
-                    <CancelBtn />
-                </Form>
+                            <div className={"createOrEditContainer__btns"}>
+                                <EditBtn
+                                    urlToTable={'providers'}
+                                    confirmFunc={handleSubmit}
+                                    disabled={Object.keys(errors).length !== 0 && true}
+                                />
+                                <CancelBtn
+                                    urlToTable={'providers'}
+                                />
+                            </div>
+                        </Form>
+                    )
+                }}
             </Formik>
         </div>
     )

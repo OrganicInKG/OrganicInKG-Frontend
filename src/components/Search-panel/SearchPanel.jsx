@@ -1,11 +1,11 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import {searchSVG } from '../../assets/icons'
 import './Search-panel.css'
 
-const SearchPanel = ()=>{
+const SearchPanel = (props)=>{
     return(
         <div className='searchPanel'>
-            <span><img src={searchSVG} alt=""/><input type="text" placeholder={'Поиск'}/></span>
+            <span><img src={searchSVG} alt=""/><input type="text" placeholder={'Поиск'} onChange={(event) => props.handleSearchText(event.target.value)}/></span>
         </div>
     )
 }

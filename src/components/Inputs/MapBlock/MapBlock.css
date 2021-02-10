@@ -1,0 +1,14 @@
+.mapField{
+    display: flex;
+    flex-direction: column;
+}
+
+.map-container{
+    height:350px!important;
+    position: relative;
+    border-radius : 5px;
+    border: 1px solid #929292;
+    margin-top: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}

@@ -1,8 +1,8 @@
 export const categoryInputConfig = [{
     label: "Название",
     placeholder: "Овощи",
-    required: "Впишите название",
-    min: 3,
+    required: "Введите название категории",
+
 },
     {
         label: "Описание",
@@ -12,7 +12,14 @@ export const categoryInputConfig = [{
         label: "Родительская категория",
         placeholder: "Выберите родительскую категорию",
         type: 'selector',
-        dataType: 'number',
+        selectorProperty: 'category',
         nullable: true
-    },]
+    },
+    {
+        title: "Иконка категории",
+        dataIndex: 'image',
+        type: 'image',
+        fileTypes:'image/svg+xml',
+    },
+]
 

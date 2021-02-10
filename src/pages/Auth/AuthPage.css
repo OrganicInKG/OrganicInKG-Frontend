@@ -16,10 +16,13 @@
 .auth__block form{
     display: flex;
     flex-direction: column;
-
     width: 570px;
 }
-
+@media only screen and (max-width: 784px) {
+    .auth__block form{
+        width: 300px!important;
+    }
+}
 .auth__block form input{
     margin: 12px 0;
 
@@ -33,7 +36,7 @@
     font-size: 20px;
     line-height: 27px;
 
-    color: #8E8E8E;
+    color: #000000;
 }
 .auth__btn{
     background: #009B00;
@@ -48,7 +51,7 @@
     color: #F2F2F2;
 
     padding: 12px 25px;
-    margin-top: 40px;
+    margin: 40px 0;
 
     cursor: pointer;
 }
